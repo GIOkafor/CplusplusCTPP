@@ -1,0 +1,82 @@
+#include <iostream>
+#include <cstring>
+#include <iomanip>
+using namespace std;
+
+class counter_top
+    {
+        protected:
+          char *material;
+          int size;
+          double cost, price;
+
+          public:
+             counter_top(char *mtrl, int sz, double cst) ;
+             double getCost(void);
+             virtual void set_price(){price = (cost*size)*1.07;};
+             double get_price(){return price;};
+             double get_size(){return size;};
+             char *get_mtrl(){return material;};
+             ~counter_top(){delete[] material;cout<<"goodbye"<<endl;};
+    };
+
+counter_top::counter_top(char *mtrl, int sz = 24, double cst = 25) : size(sz){
+    //counter_top(int cst, int sz, char *mtrl){cost = cst; size = sz;}
+    material = new char[19];
+    strcpy(material, mtrl);
+    cost = cst;
+    cout << "hello1 " << endl;
+}
+
+ostream& operator<<(ostream& os, counter_top& ct){
+        os.setf(ios::fixed);
+	    os << setprecision(2);
+		os << "Basic " << ct.get_mtrl() << " counter top, " << ct.get_size() << " sq ft, is priced at $" << ct.get_price() << endl;
+		return os;
+	}
+
+class special_counter_top : public counter_top{
+    private:
+        double special_install_cost;
+    public:
+        special_counter_top(char *mtrl, double cst = 28, double spc_instl_cst = 7, int sz = 34): counter_top(mtrl, cst, sz)
+        {
+            special_install_cost = spc_instl_cst * sz;
+            cout << "hello2" << endl;
+        };
+    void set_price()
+    {
+        price = (size * (1.08 * cost))+ special_install_cost;
+    };
+    friend ostream& operator<<(ostream& os, special_counter_top& sct)
+    {
+        os.setf(ios::fixed);
+	    os << setprecision(2);
+        os << "Special " << sct.material<< " counter top, " << sct.size<< " sq ft, is priced at $"<< sct.price <<endl;
+        return os;
+    }
+};
+
+main ()
+{
+cout<<"CPS311 F2013 A4 Submission, Group #24 "<<endl;
+cout<<endl;
+    counter_top ct1("granite", 22);
+    counter_top ct2("marble", 24, 27);
+    special_counter_top s_ct1("composite_quartz",30,7.50);
+cout<< endl;
+    counter_top *p;
+cout<< endl;
+    p = &ct1;
+    p->set_price();
+    cout<<ct1;
+cout<< endl;
+    p = &ct2;
+    p->set_price();
+    cout<<ct2;
+cout << endl;
+    p = &s_ct1;
+    p->set_price();
+    cout<<s_ct1;
+cout<<endl;
+}
